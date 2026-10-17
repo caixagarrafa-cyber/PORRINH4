@@ -1,5 +1,7 @@
 (() => {
   const $ = (id) => document.getElementById(id);
+  const DEFAULT_SUPABASE_URL = 'https://lhosxbnbhxvsyepgnpzz.supabase.co';
+  const DEFAULT_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_V6uWFbRecxvoUbqsO33sSQ_RbA_5G3B';
   const state = {
     supabase: null, playerId: localStorage.getItem('porrinh4PlayerId') || makeId(),
     roomCode: null, channel: null, room: null, selectedNumber: null, selectedBet: null,
@@ -27,8 +29,8 @@
     return Array.from({ length: 6 }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join('');
   }
   function showSettings(message = 'Preencha os dois dados do seu projeto Supabase.') {
-    $('supabase-url').value = localStorage.getItem('porrinh4SupabaseUrl') || '';
-    $('supabase-key').value = localStorage.getItem('porrinh4SupabaseKey') || '';
+    $('supabase-url').value = localStorage.getItem('porrinh4SupabaseUrl') || DEFAULT_SUPABASE_URL;
+    $('supabase-key').value = localStorage.getItem('porrinh4SupabaseKey') || DEFAULT_SUPABASE_PUBLISHABLE_KEY;
     setConnection(message);
     dialog.showModal();
   }
@@ -64,7 +66,15 @@
 
   const savedUrl = localStorage.getItem('porrinh4SupabaseUrl');
   const savedKey = localStorage.getItem('porrinh4SupabaseKey');
-  if (savedUrl && savedKey) connectSupabase(savedUrl, savedKey).catch((error) => setConnection(error.message));
+  const initialUrl = savedUrl || DEFAULT_SUPABASE_URL;
+  const initialKey = savedKey || DEFAULT_SUPABASE_PUBLISHABLE_KEY;
+  connectSupabase(initialUrl, initialKey).catch(async (error) => {
+    setConnection(error.message);
+    if (initialUrl !== DEFAULT_SUPABASE_URL || initialKey !== DEFAULT_SUPABASE_PUBLISHABLE_KEY) {
+      try { await connectSupabase(DEFAULT_SUPABASE_URL, DEFAULT_SUPABASE_PUBLISHABLE_KEY); }
+      catch (fallbackError) { setConnection(fallbackError.message); }
+    }
+  });
 
   async function action(actionName, payload = {}, code = state.roomCode, playerId = state.playerId) {
     const { data, error } = await state.supabase.rpc('porrinh4_action', {
@@ -270,3 +280,4 @@
   function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character])); }
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(() => {});
 })();
+
