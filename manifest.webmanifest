@@ -1,0 +1,13 @@
+{
+  "name": "PORRINH4 — Jogo online",
+  "short_name": "PORRINH4",
+  "description": "Jogo de números e palpites para jogar junto.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#10110f",
+  "theme_color": "#10110f",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#10110f">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="description" content="PORRINH4 — jogo de números e palpites em tempo real.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <title>PORRINH4 — jogo online</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="PORRINH4 início"><span class="brand-mark">P4</span><span>PORRINH<span class="acid">4</span></span></a>
+      <button class="icon-button" id="settings-open" aria-label="Conectar ao Supabase" title="Conectar ao Supabase">⚙</button>
+    </header>
+
+    <section class="hero" id="home-view">
+      <div class="eyebrow"><span class="live-dot"></span> JOGO DE PALPITE · ATÉ 10 JOGADORES</div>
+      <h1>Some suas<br><span class="outline">chances.</span></h1>
+      <p class="intro">Escolha de 0 a 3. Aposte na soma de todo mundo. Acerte antes dos outros.</p>
+      <div class="home-actions">
+        <label class="field-label" for="player-name">Seu nome</label>
+        <input id="player-name" maxlength="18" autocomplete="nickname" placeholder="Como quer ser chamado?">
+        <button class="primary-button" id="practice-game">Jogar agora — sem configurar <span>↗</span></button>
+        <button class="secondary-button online-button" id="create-room">Criar sala online</button>
+        <div class="divider"><span>OU ENTRE EM UMA SALA</span></div>
+        <div class="join-row"><input id="room-code-input" maxlength="6" placeholder="CÓDIGO" aria-label="Código da sala"><button class="secondary-button" id="join-room">Entrar</button></div>
+      </div>
+      <div class="howto"><div><b>01</b><span>Escolha seu número</span></div><div><b>02</b><span>Palpite na soma</span></div><div><b>03</b><span>Revele em 5 segundos</span></div></div>
+    </section>
+
+    <section id="room-view" class="room-view hidden">
+      <div class="room-head"><div><div class="eyebrow"><span class="live-dot"></span> SALA AO VIVO</div><h1 id="room-title">Sala</h1></div><button class="share-button" id="share-room">Compartilhar ↗</button></div>
+      <div class="room-code-card"><span>CÓDIGO DA SALA</span><strong id="room-code">------</strong><button id="copy-code" aria-label="Copiar código">Copiar</button></div>
+      <div id="notice" class="notice hidden" role="status"></div>
+      <div class="game-grid">
+        <div class="game-main">
+          <div class="section-heading"><div><span class="eyebrow">RODADA <span id="round-number">1</span></span><h2 id="phase-title">Aguardando jogadores</h2></div><span class="phase-pill" id="phase-pill">SALA ABERTA</span></div>
+          <div id="host-controls" class="host-controls hidden"><p>Todo mundo entrou? Inicie para abrir as escolhas desta rodada.</p><button class="primary-button" id="start-round">Iniciar rodada <span>↗</span></button></div>
+          <div id="pick-panel" class="pick-panel hidden">
+            <div class="pick-block"><div class="pick-title"><span class="pick-index">1</span><div><b>Escolha seu número</b><small>De 0 a 3 · pode repetir</small></div></div><div class="number-options" id="number-options"></div></div>
+            <div class="pick-block"><div class="pick-title"><span class="pick-index">2</span><div><b>Qual será a soma?</b><small>Palpites reservados não se repetem</small></div></div><div id="bet-options" class="bet-options"></div></div>
+            <button class="primary-button confirm-button" id="confirm-choice" disabled>Confirmar minhas escolhas <span>✓</span></button>
+          </div>
+          <div id="waiting-panel" class="waiting-panel hidden"><div class="waiting-icon">◷</div><h3 id="waiting-title">Aguardando confirmações</h3><p id="waiting-copy">Suas escolhas estão guardadas em segredo.</p><div class="countdown hidden" id="countdown">5</div></div>
+          <div id="result-panel" class="result-panel hidden"><div class="result-kicker">SOMA DA RODADA</div><div class="result-number" id="result-sum">0</div><p id="result-copy"></p><div class="revealed-players" id="revealed-players"></div><button class="primary-button hidden" id="next-round">Próxima rodada <span>↗</span></button></div>
+        </div>
+        <aside class="players-card"><div class="players-heading"><h3>Jogadores</h3><span id="player-count">0/10</span></div><div id="players-list" class="players-list"></div><div class="players-foot">Os palpites ficam reservados até a revelação.</div></aside>
+      </div>
+      <button class="text-button" id="leave-room">← Sair da sala</button>
+    </section>
+    <footer><span>PORRINH4</span><span>FEITO PARA JOGAR JUNTO</span></footer>
+  </main>
+
+  <dialog id="settings-dialog" class="settings-dialog">
+    <form method="dialog"><button class="dialog-close" aria-label="Fechar">×</button></form>
+    <div class="eyebrow">CONEXÃO DO JOGO</div><h2>Conectar ao Supabase</h2>
+    <p class="dialog-copy">Cole a URL e a chave publicável do seu projeto. Você só precisa fazer isso uma vez neste aparelho.</p>
+    <label class="field-label" for="supabase-url">URL do projeto</label><input id="supabase-url" inputmode="url" placeholder="https://seuprojeto.supabase.co">
+    <label class="field-label field-spaced" for="supabase-key">Chave publicável</label><input id="supabase-key" autocomplete="off" placeholder="sb_publishable_...">
+    <div class="setup-hint">No Supabase, abra <b>Connect</b> para copiar URL e chave. Depois abra o SQL Setup do PORRINH4 e execute o conteúdo no <b>SQL Editor</b>.</div>
+    <div class="dialog-actions"><a class="secondary-button sql-link" href="supabase-setup.sql" target="_blank" rel="noopener">Abrir SQL Setup</a><button class="primary-button" id="supabase-save">Salvar e conectar</button></div>
+    <div class="connection-state" id="connection-state">Sem conexão configurada</div>
+  </dialog>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+</body>
+</html>
